@@ -114,36 +114,46 @@ public class ArrayDeque<T> implements Iterable<T>, Deque<T> {
 
     @Override
     public boolean equals(Object o) {
-        if (o instanceof ArrayDeque) {
-            ArrayDeque object = (ArrayDeque) o;
-
-            if (object.size() != size) {
-                return false;
-            }
-            for (int i = 0; i < size; i++) {
-                if (object.get(i).equals(get(i))) {
-                    continue;
-                }
-                else {
-                    return false;
-                }
-            }
-            return true;
+        if (o == null) {
+            return false;
         }
-        else if (o instanceof LinkedListDeque) {
-            LinkedListDeque object = (LinkedListDeque) o;
-            if (object.size() != size) {
-                return false;
-            }
-            for (int i = 0; i < size; i++) {
-                if (object.get(i).equals(get(i))) {
-                    continue;
-                }
-                else {
+        if (o instanceof Deque) {
+            if (o instanceof LinkedListDeque) {
+                LinkedListDeque<T> object = (LinkedListDeque<T>) o;
+
+                if (object.size() != size) {
                     return false;
                 }
+
+                for (int i = 0; i < size; i++) {
+                    if (object.get(i).equals(get(i))) {
+                        continue;
+                    }
+                    else {
+                        return false;
+                    }
+                }
+                return true;
             }
-            return true;
+            else if (o instanceof ArrayDeque) {
+                ArrayDeque<T> object = (ArrayDeque<T>) o;
+
+                if (object.size() != size) {
+                    return false;
+                }
+                for (int i = 0; i < size; i++) {
+                    if (object.get(i).equals(get(i))) {
+                        continue;
+                    }
+                    else {
+                        return false;
+                    }
+                }
+                return true;
+            }
+            else {
+                return false;
+            }
         }
         else {
             return false;
