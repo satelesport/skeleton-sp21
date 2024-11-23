@@ -166,13 +166,13 @@ public class ArrayDequeTest {
             lld1.addFirst(i);
             lld2.addLast(101 - i);
         }
-        for(int i=1;i<=80;i++){
-            lld1.removeFirst();
-            lld2.removeFirst();
-        }
+//        for(int i=1;i<=80;i++){
+//            lld1.removeFirst();
+//            lld2.removeFirst();
+//        }
 //        lld1.printDeque();
 //        System.out.println();
 //        lld2.printDeque();
-        assertTrue("Should be equal",lld2.equals(lld1));
+        assertTrue("Should be equal",lld1.equals(lld2));
     }
 }

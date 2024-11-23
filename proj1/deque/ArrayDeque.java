@@ -162,7 +162,9 @@ public class ArrayDeque<T> implements Iterable<T>, Deque<T> {
         }
 
         public boolean hasNext() {
-            if (size == 0) return false;
+            if (size == 0) {
+                return false;
+            }
             return nowPos != end + 1;
         }
 
