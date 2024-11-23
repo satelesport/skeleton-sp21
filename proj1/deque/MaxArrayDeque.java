@@ -1,8 +1,9 @@
 package deque;
 
-public class MaxArrayDeque<T> extends ArrayDeque{
+public class MaxArrayDeque<T> extends ArrayDeque<T> {
 
-    public MaxArrayDeque(){
+    public MaxArrayDeque() {
         super();
     }
+
 }

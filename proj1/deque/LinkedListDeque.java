@@ -2,7 +2,7 @@ package deque;
 
 import java.util.Iterator;
 
-public class LinkedListDeque<T> implements Iterable<T> {
+public class LinkedListDeque<T> implements Iterable<T>, Deque<T> {
 
     private class Pointer {
         public T value;
@@ -63,10 +63,6 @@ public class LinkedListDeque<T> implements Iterable<T> {
 
         newItem.before = temp;
         end.before = newItem;
-    }
-
-    public boolean isEmpty() {
-        return size == 0;
     }
 
     public int size() {
