@@ -2,18 +2,18 @@ package deque;
 
 import java.util.Iterator;
 
-public class LinkedListDeque<T> implements Iterable<T>{
+public class LinkedListDeque<T> implements Iterable<T> {
 
-    private class Pointer{
+    private class Pointer {
         public T value;
         public Pointer next;
         public Pointer before;
-        public Pointer(){
+        public Pointer() {
             value = null;
             next = null;
             before = null;
         }
-        public Pointer(T x){
+        public Pointer(T x) {
             value = x;
             next = null;
             before = null;
@@ -24,7 +24,7 @@ public class LinkedListDeque<T> implements Iterable<T>{
     private Pointer end;
     private int size;
 
-    public LinkedListDeque(){
+    public LinkedListDeque() {
         first = new Pointer();
         end = new Pointer();
         first.next = end;
@@ -32,7 +32,7 @@ public class LinkedListDeque<T> implements Iterable<T>{
         size = 0;
     }
 
-    public LinkedListDeque(T x){
+    public LinkedListDeque(T x) {
         first = new Pointer();
         end = new Pointer();
         Pointer newItem = new Pointer(x);
@@ -43,7 +43,7 @@ public class LinkedListDeque<T> implements Iterable<T>{
         size = 1;
     }
 
-    public void addFirst(T item){
+    public void addFirst(T item) {
         size += 1;
         Pointer newItem = new Pointer(item);
         Pointer temp = first.next;
@@ -54,7 +54,7 @@ public class LinkedListDeque<T> implements Iterable<T>{
         temp.before = newItem;
     }
 
-    public void addLast(T item){
+    public void addLast(T item) {
         size += 1;
         Pointer newItem = new Pointer(item);
         Pointer temp = end.before;
@@ -65,16 +65,16 @@ public class LinkedListDeque<T> implements Iterable<T>{
         end.before = newItem;
     }
 
-    public boolean isEmpty(){
+    public boolean isEmpty() {
         return size == 0;
     }
 
-    public int size(){
+    public int size() {
         return size;
     }
 
-    public T removeFirst(){
-        if(size == 0){
+    public T removeFirst() {
+        if(size == 0) {
             return null;
         }
         size -= 1;
@@ -89,8 +89,8 @@ public class LinkedListDeque<T> implements Iterable<T>{
         return removeItemValue;
     }
 
-    public T removeLast(){
-        if(size == 0){
+    public T removeLast() {
+        if(size == 0) {
             return null;
         }
         size -= 1;
@@ -105,7 +105,7 @@ public class LinkedListDeque<T> implements Iterable<T>{
         return removeItemValue;
     }
 
-    public T get(int index){
+    public T get(int index) {
         if(index > size - 1){
             return null;
         }
@@ -119,11 +119,11 @@ public class LinkedListDeque<T> implements Iterable<T>{
         return temp.value;
     }
 
-    public T getRecursive(int index){
+    public T getRecursive(int index) {
         return get(index);
     }
 
-    public void printDeque(){
+    public void printDeque() {
         Pointer temp = first.next;
         while(temp != end){
             System.out.print(temp.value+" ");
@@ -132,15 +132,15 @@ public class LinkedListDeque<T> implements Iterable<T>{
         System.out.println();
     }
 
-    public Iterator<T> iterator(){
+    public Iterator<T> iterator() {
         return new LinkedListDequeIterator();
     }
 
-    private class LinkedListDequeIterator implements Iterator<T>{
+    private class LinkedListDequeIterator implements Iterator<T> {
         private int nowPos;
         private Pointer nowPointer;
 
-        public LinkedListDequeIterator(){
+        public LinkedListDequeIterator() {
             nowPos = 0;
             nowPointer = first.next;
         }
@@ -149,7 +149,7 @@ public class LinkedListDeque<T> implements Iterable<T>{
             return nowPos < size;
         }
 
-        public T next(){
+        public T next() {
             T returnvalue = nowPointer.value;
             nowPointer = nowPointer.next;
             nowPos += 1;
@@ -158,15 +158,15 @@ public class LinkedListDeque<T> implements Iterable<T>{
     }
 
     @Override
-    public boolean equals(Object o){
-        if(o instanceof LinkedListDeque){
+    public boolean equals(Object o) {
+        if(o instanceof LinkedListDeque) {
             LinkedListDeque object = (LinkedListDeque) o;
 
-            if(object.size != size){
+            if(object.size != size) {
                 return false;
             }
 
-            for(int i = 0;i < size;i ++){
+            for(int i = 0;i < size;i ++) {
                 if(object.get(i).equals(get(i))){
                     continue;
                 }
