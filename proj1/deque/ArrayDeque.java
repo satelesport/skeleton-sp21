@@ -9,7 +9,7 @@ public class ArrayDeque<T> implements Iterable<T>, Deque<T> {
         be careful with the first and end
      */
 
-    private T[] array = (T[])new Object[8];
+    private T[] array = (T[]) new Object[8];
     private int size;
     //first point to the first number, end point to the last number
     private int first;
@@ -37,8 +37,8 @@ public class ArrayDeque<T> implements Iterable<T>, Deque<T> {
     }
 
     public void resize(int newSize) {
-        T[] newArray = (T[])new Object[newSize];
-        for(int i = 0; i < size; i++) {
+        T[] newArray = (T[]) new Object[newSize];
+        for (int i = 0; i < size; i++) {
             int pos = (first + i) % array.length;
             newArray[i] = array[pos];
         }
@@ -48,10 +48,10 @@ public class ArrayDeque<T> implements Iterable<T>, Deque<T> {
     }
 
     public void addFirst(T item) {
-        if(size == array.length - 1) {
+        if (size == array.length - 1) {
             resize((int) (1.5 * size));
         }
-        if(isEmpty()) {
+        if (isEmpty()) {
             first = 0;
             end = 0;
             array[first] = item;
@@ -64,10 +64,10 @@ public class ArrayDeque<T> implements Iterable<T>, Deque<T> {
     }
 
     public void addLast(T item) {
-        if(size == array.length - 1) {
-            resize((int) (1.5*size));
+        if (size == array.length - 1) {
+            resize((int) (1.5 * size));
         }
-        if(isEmpty()) {
+        if (isEmpty()) {
             first = 0;
             end = 0;
             array[first] = item;
@@ -80,10 +80,10 @@ public class ArrayDeque<T> implements Iterable<T>, Deque<T> {
     }
 
     public T removeFirst() {
-        if(size == 0) {
+        if (size == 0) {
             return null;
         }
-        if(size < array.length / 4){
+        if (size < array.length / 4) {
             resize(array.length / 4);
         }
         size -= 1;
@@ -94,10 +94,10 @@ public class ArrayDeque<T> implements Iterable<T>, Deque<T> {
     }
 
     public T removeLast() {
-        if(size == 0) {
+        if (size == 0) {
             return null;
         }
-        if(size < array.length / 4 && array.length > 16) {
+        if (size < array.length / 4 && array.length > 16) {
             resize(array.length / 4 + 1);
         }
         size -= 1;
@@ -108,7 +108,7 @@ public class ArrayDeque<T> implements Iterable<T>, Deque<T> {
     }
 
     public T get(int index) {
-        if(index > size - 1) {
+        if (index > size - 1) {
             return null;
         }
         int pos = (first + index) % array.length;
@@ -116,32 +116,36 @@ public class ArrayDeque<T> implements Iterable<T>, Deque<T> {
     }
 
     public void printDeque() {
-        for(int i=0;i<size;i++) {
+        for (int i = 0; i < size; i++) {
             int pos = (first + i) % array.length;
-            System.out.print(array[pos]+" ");
+            System.out.print(array[pos] + " ");
         }
         System.out.println();
     }
 
     @Override
     public boolean equals(Object o) {
-        if(o instanceof ArrayDeque) {
+        if (o instanceof ArrayDeque) {
             ArrayDeque object = (ArrayDeque) o;
 
-            if(object.size != size) {
+            if (object.size != size) {
                 return false;
             }
 
             int first2 = object.getFirst();
-            for(int i = 0;i < size;i ++){
-                if(object.get(i).equals(get(i))){
+            for (int i = 0; i < size; i++) {
+                if (object.get(i).equals(get(i))) {
                     continue;
                 }
-                else return false;
+                else {
+                    return false;
+                }
             }
             return true;
         }
-        else return false;
+        else {
+            return false;
+        }
     }
 
     public Iterator<T> iterator() {
@@ -156,6 +160,7 @@ public class ArrayDeque<T> implements Iterable<T>, Deque<T> {
         }
 
         public boolean hasNext() {
+            if(size == 0) return false;
             return nowPos != end + 1;
         }
 

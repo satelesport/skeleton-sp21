@@ -70,7 +70,7 @@ public class LinkedListDeque<T> implements Iterable<T>, Deque<T> {
     }
 
     public T removeFirst() {
-        if(size == 0) {
+        if (size == 0) {
             return null;
         }
         size -= 1;
@@ -86,7 +86,7 @@ public class LinkedListDeque<T> implements Iterable<T>, Deque<T> {
     }
 
     public T removeLast() {
-        if(size == 0) {
+        if (size == 0) {
             return null;
         }
         size -= 1;
@@ -102,15 +102,15 @@ public class LinkedListDeque<T> implements Iterable<T>, Deque<T> {
     }
 
     public T get(int index) {
-        if(index > size - 1){
+        if (index > size - 1) {
             return null;
         }
 
         Pointer temp = first.next;
         int nowIndex = 0;
-        while(nowIndex < index){
+        while (nowIndex < index) {
             temp = temp.next;
-            nowIndex ++;
+            nowIndex++;
         }
         return temp.value;
     }
@@ -121,8 +121,8 @@ public class LinkedListDeque<T> implements Iterable<T>, Deque<T> {
 
     public void printDeque() {
         Pointer temp = first.next;
-        while(temp != end){
-            System.out.print(temp.value+" ");
+        while (temp != end) {
+            System.out.print(temp.value + " ");
             temp = temp.next;
         }
         System.out.println();
@@ -155,21 +155,25 @@ public class LinkedListDeque<T> implements Iterable<T>, Deque<T> {
 
     @Override
     public boolean equals(Object o) {
-        if(o instanceof LinkedListDeque) {
+        if (o instanceof LinkedListDeque) {
             LinkedListDeque object = (LinkedListDeque) o;
 
-            if(object.size != size) {
+            if (object.size != size) {
                 return false;
             }
 
-            for(int i = 0;i < size;i ++) {
+            for (int i = 0;i < size;i++) {
                 if(object.get(i).equals(get(i))){
                     continue;
                 }
-                else return false;
+                else {
+                    return false;
+                }
             }
             return true;
         }
-        else return false;
+        else {
+            return false;
+        }
     }
 }
