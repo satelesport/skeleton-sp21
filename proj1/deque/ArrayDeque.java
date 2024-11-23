@@ -118,42 +118,16 @@ public class ArrayDeque<T> implements Iterable<T>, Deque<T> {
             return false;
         }
         if (o instanceof Deque) {
-            if (o instanceof LinkedListDeque) {
-                LinkedListDeque<T> object = (LinkedListDeque<T>) o;
-
-                if (object.size() != size) {
-                    return false;
-                }
-
-                for (int i = 0; i < size; i++) {
-                    if (object.get(i).equals(get(i))) {
-                        continue;
-                    }
-                    else {
-                        return false;
-                    }
-                }
-                return true;
-            }
-            else if (o instanceof ArrayDeque) {
-                ArrayDeque<T> object = (ArrayDeque<T>) o;
-
-                if (object.size() != size) {
-                    return false;
-                }
-                for (int i = 0; i < size; i++) {
-                    if (object.get(i).equals(get(i))) {
-                        continue;
-                    }
-                    else {
-                        return false;
-                    }
-                }
-                return true;
-            }
-            else {
+            Deque<T> object = (Deque<T>) o;
+            if (object.size() != size) {
                 return false;
             }
+            for (int i = 0; i < size; i++){
+                if(object.get(i) != get(i)){
+                    return false;
+                }
+            }
+            return true;
         }
         else {
             return false;
