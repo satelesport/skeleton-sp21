@@ -161,7 +161,7 @@ public class ArrayDequeTest {
     /*to test if two different queue equal*/
     public void equalTest(){
         ArrayDeque<Integer> lld1 = new ArrayDeque<Integer>();
-        ArrayDeque<Integer> lld2 = new ArrayDeque<Integer>();
+        LinkedListDeque<Integer> lld2 = new LinkedListDeque<>();
         for(int i=1;i<=100;i++){
             lld1.addFirst(i);
             lld2.addLast(101 - i);
@@ -173,6 +173,6 @@ public class ArrayDequeTest {
 //        lld1.printDeque();
 //        System.out.println();
 //        lld2.printDeque();
-        assertTrue("Should be equal",lld1.equals(lld2));
+        assertTrue("Should be equal",lld2.equals(lld1));
     }
 }
