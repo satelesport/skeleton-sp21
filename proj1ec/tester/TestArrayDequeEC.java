@@ -44,7 +44,7 @@ public class TestArrayDequeEC {
                 }
             }
             if (situation == 4) {
-                if (!d2.isEmpty()) {
+                if (!d2.isEmpty() && !d1.isEmpty()) {
                     Integer item1 = d1.get(0);
                     Integer item2 = d2.get(0);
                     org.junit.Assert.assertEquals("get(0), student was " + item1 + " correct was " + item2, item2, item1);
