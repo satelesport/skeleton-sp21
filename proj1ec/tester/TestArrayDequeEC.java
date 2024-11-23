@@ -14,7 +14,7 @@ public class TestArrayDequeEC {
         ArrayDequeSolution<Integer> d2 = new ArrayDequeSolution<>();
 
         while (true) {
-            int situation = StdRandom.uniform(0,5);
+            int situation = StdRandom.uniform(0,6);
             if (situation == 0){
                 int item = StdRandom.uniform(0,100);
                 d1.addFirst(item);
@@ -50,6 +50,12 @@ public class TestArrayDequeEC {
                     org.junit.Assert.assertEquals("get(0), student was " + item1 + " correct was " + item2, item2, item1);
                     System.out.println("get(0)");
                 }
+            }
+            if (situation == 5) {
+                Integer item1 = d1.size();
+                Integer item2 = d2.size();
+                org.junit.Assert.assertEquals("size(), student was " + item1 + " correct was " + item2, item2, item1);
+                System.out.println("size()");
             }
         }
     }
