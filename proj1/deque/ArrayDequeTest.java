@@ -164,7 +164,7 @@ public class ArrayDequeTest {
         LinkedListDeque<Integer> lld2 = new LinkedListDeque<>();
         for(int i=1;i<=100;i++){
             lld1.addFirst(i);
-            lld2.addLast(101 - i);
+            lld2.addFirst(i);
         }
 //        for(int i=1;i<=80;i++){
 //            lld1.removeFirst();
