@@ -173,6 +173,6 @@ public class ArrayDequeTest {
 //        lld1.printDeque();
 //        System.out.println();
 //        lld2.printDeque();
-        assertTrue("Should be equal",lld2.equals(lld1));
+        assertTrue("Should be equal",lld1.equals(lld2));
     }
 }
