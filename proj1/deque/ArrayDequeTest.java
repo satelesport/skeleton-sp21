@@ -110,17 +110,13 @@ public class ArrayDequeTest {
     /*remember to test both printDeque method and the iterator*/
     public void printDequeTest(){
         ArrayDeque<Integer> lld1 = new ArrayDeque<Integer>();
-        for(int i=1;i<=10;i++){
-            lld1.addFirst(i);
-            lld1.addLast(i);
-        }
-        System.out.println(lld1.get(0));
-        System.out.println("\n"+lld1.size());
-        for(int i : lld1){
-            System.out.print(i);
-        }
-
-        lld1.printDeque();
+        lld1.addFirst(1);
+        System.out.println(lld1.removeLast());
+        lld1.addLast(7);
+        lld1.addFirst(8);
+        //lld1.printDeque();
+        System.out.println(lld1.removeFirst());
+        System.out.println(lld1.removeFirst());
     }
 
     @Test

@@ -25,18 +25,11 @@ public class ArrayDeque<T> implements Iterable<T>, Deque<T> {
         return first;
     }
 
-    public ArrayDeque(T x) {
-        first = 0;
-        end = 0;
-        array[end] = x;
-        size = 1;
-    }
-
     public int size() {
         return size;
     }
 
-    public void resize(int newSize) {
+    private void resize(int newSize) {
         T[] newArray = (T[]) new Object[newSize];
         for (int i = 0; i < size; i++) {
             int pos = (first + i) % array.length;
@@ -47,13 +40,19 @@ public class ArrayDeque<T> implements Iterable<T>, Deque<T> {
         end = size - 1;
     }
 
+    public int getEnd(){
+        return end;
+    }
+
+
+
     public void addFirst(T item) {
         if (size == array.length - 1) {
             resize((int) (1.5 * size));
         }
         if (isEmpty()) {
-            first = 0;
-            end = 0;
+            first = 1;
+            end = 1;
             array[first] = item;
             size += 1;
             return;
@@ -68,8 +67,8 @@ public class ArrayDeque<T> implements Iterable<T>, Deque<T> {
             resize((int) (1.5 * size));
         }
         if (isEmpty()) {
-            first = 0;
-            end = 0;
+            first = 1;
+            end = 1;
             array[first] = item;
             size += 1;
             return;
@@ -83,8 +82,8 @@ public class ArrayDeque<T> implements Iterable<T>, Deque<T> {
         if (size == 0) {
             return null;
         }
-        if (size < array.length / 4) {
-            resize(array.length / 4);
+        if (size < array.length / 4 && size > 16) {
+            resize(array.length / 4 + 2);
         }
         size -= 1;
 
@@ -97,8 +96,8 @@ public class ArrayDeque<T> implements Iterable<T>, Deque<T> {
         if (size == 0) {
             return null;
         }
-        if (size < array.length / 4 && array.length > 16) {
-            resize(array.length / 4 + 1);
+        if (size < array.length / 4 && size > 16) {
+            resize(array.length / 4 + 2);
         }
         size -= 1;
 

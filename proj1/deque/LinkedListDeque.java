@@ -32,17 +32,6 @@ public class LinkedListDeque<T> implements Iterable<T>, Deque<T> {
         size = 0;
     }
 
-    public LinkedListDeque(T x) {
-        first = new Pointer();
-        end = new Pointer();
-        Pointer newItem = new Pointer(x);
-        first.next = newItem;
-        end.before = newItem;
-        newItem.before = first;
-        newItem.next = end;
-        size = 1;
-    }
-
     public void addFirst(T item) {
         size += 1;
         Pointer newItem = new Pointer(item);
