@@ -21,10 +21,6 @@ public class ArrayDeque<T> implements Iterable<T>, Deque<T> {
         end = 0;
     }
 
-    public int getFirst() {
-        return first;
-    }
-
     public int size() {
         return size;
     }
@@ -39,12 +35,6 @@ public class ArrayDeque<T> implements Iterable<T>, Deque<T> {
         first = 0;
         end = size - 1;
     }
-
-    public int getEnd(){
-        return end;
-    }
-
-
 
     public void addFirst(T item) {
         if (size == array.length - 1) {
@@ -127,11 +117,24 @@ public class ArrayDeque<T> implements Iterable<T>, Deque<T> {
         if (o instanceof ArrayDeque) {
             ArrayDeque object = (ArrayDeque) o;
 
-            if (object.size != size) {
+            if (object.size() != size) {
                 return false;
             }
-
-            int first2 = object.getFirst();
+            for (int i = 0; i < size; i++) {
+                if (object.get(i).equals(get(i))) {
+                    continue;
+                }
+                else {
+                    return false;
+                }
+            }
+            return true;
+        }
+        else if (o instanceof LinkedListDeque) {
+            LinkedListDeque object = (LinkedListDeque) o;
+            if (object.size() != size) {
+                return false;
+            }
             for (int i = 0; i < size; i++) {
                 if (object.get(i).equals(get(i))) {
                     continue;
