@@ -1,4 +1,5 @@
 import sys, re
+# noinspection PyInterpreter
 from subprocess import \
      check_output, PIPE, STDOUT, DEVNULL, CalledProcessError, TimeoutExpired
 from os.path import abspath, basename, dirname, exists, join, splitext
