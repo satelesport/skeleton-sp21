@@ -143,6 +143,10 @@ public class BSTMap<K extends Comparable<K>,V> implements Map61B<K, V> {
     @Override
     public V remove(K key) {
         throw new UnsupportedOperationException("remove cannot be used");
+//        if(!containsKey(key)){
+//            return null;
+//        }
+//        BSTNode node = head;
     }
 
     @Override
