@@ -104,9 +104,6 @@ public class BSTMap<K extends Comparable<K>,V> implements Map61B<K, V> {
 
     @Override
     public void put(K key, V value) {
-        if(containsKey(key)){
-            return;
-        }
         size++;
         if(head.leftChild == null){
             head.leftChild = new BSTNode<>(key, value);
@@ -114,6 +111,9 @@ public class BSTMap<K extends Comparable<K>,V> implements Map61B<K, V> {
         }
         BSTNode<K,V> node = head.leftChild;
         while(node != null){
+            if(key.compareTo(node.key) == 0){
+                return;
+            }
             if(key.compareTo(node.key) < 0){
                 if(node.leftChild == null){
                     node.leftChild = new BSTNode<>(key, value);
