@@ -30,7 +30,7 @@ public class CapersRepository {
      *    - story -- file containing the current story
      */
     public static void setupPersistence() {
-        CWD.mkdir();
+        Dog.DOG_FOLDER.mkdir();
         CAPERS_FOLDER.mkdir();
     }
 
@@ -41,15 +41,15 @@ public class CapersRepository {
      */
     public static void writeStory(String text) {
         File f = Utils.join(CAPERS_FOLDER,"story");
-        if(f.exists()){
-            String newStory = Utils.readContentsAsString(f);
-            System.out.println(newStory);
-            Utils.writeContents(f, newStory + '\n' + text);
+        String newStory;
+        if(!f.exists()){
+            newStory = text;
         }
         else{
-            System.out.println(text);
-            Utils.writeContents(f,text);
+            newStory = Utils.readContentsAsString(f) + '\n' +text;
         }
+        System.out.println(newStory);
+        Utils.writeContents(f,newStory);
     }
 
     /**
@@ -60,7 +60,7 @@ public class CapersRepository {
     public static void makeDog(String name, String breed, int age) {
         Dog d = new Dog(name, breed, age);
         d.saveDog();
-        d.toString();
+        System.out.println(d.toString());
     }
 
     /**
@@ -72,5 +72,6 @@ public class CapersRepository {
     public static void celebrateBirthday(String name) {
         Dog d = Dog.fromFile(name);
         d.haveBirthday();
+        d.saveDog();
     }
 }
