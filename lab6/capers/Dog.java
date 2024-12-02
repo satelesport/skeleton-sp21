@@ -58,7 +58,7 @@ public class Dog implements Serializable{ // TODO
      */
     public void saveDog() {
         File f = join(DOG_FOLDER, name);
-        writeObject(f,this);
+        writeContents(f,this);
     }
 
     @Override
