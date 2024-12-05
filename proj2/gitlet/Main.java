@@ -26,7 +26,7 @@ public class Main {
                     System.out.println("Incorrect operands.");
                     System.exit(0);
                 }
-                Repository.add(args[3]);
+                Repository.add(args[1]);
                 break;
             case "comment":
 

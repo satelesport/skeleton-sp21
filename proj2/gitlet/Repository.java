@@ -83,6 +83,7 @@ public class Repository {
         2.add b into addstage
         3.if b is in removestage, remove it from removestage
         4.if b is identical to the current commit, remove it from addstage
+        5.save the addstage and removestage
      */
     public static void add(String filePath){
         File f = join(filePath);
@@ -95,5 +96,6 @@ public class Repository {
 
         AddStage addstage = AddStage.readAddStage();
         addstage.add(b);
+        addstage.saveAddStage();
     }
 }

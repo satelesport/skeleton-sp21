@@ -34,6 +34,7 @@ public class AddStage implements Serializable {
         if(removeStage.checkBlob(b)){
             removeStage.remove(b);
         }
+        removeStage.saveRemoveStage();
 
         if(currentCommit.checkBlob(b)){
             addStage.remove(b.getFilePath());

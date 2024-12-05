@@ -36,7 +36,7 @@ public class Blob implements Serializable {
     }
 
     private String createID(){
-        return Utils.sha1(fileName, filePath, content.toString());
+        return Utils.sha1(fileName, filePath, content);
     }
 
 }
