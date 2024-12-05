@@ -22,7 +22,11 @@ public class Main {
                 Repository.init();
                 break;
             case "add":
-
+                if(!validateNumArgs(args, 2)){
+                    System.out.println("Incorrect operands.");
+                    System.exit(0);
+                }
+                Repository.add(args[3]);
                 break;
             case "comment":
 
@@ -63,13 +67,13 @@ public class Main {
         }
     }
 
-    public static boolean validateNumArgs(String cmd, String[] args, int n) {
+    public static boolean validateNumArgs(String[] args, int n) {
         if (args.length != n) {
             return false;
         }
         else if(!Repository.isCreate()){
             System.out.println("Not in an initialized Gitlet directory.");
-            return false;
+            System.exit(0);
         }
         return true;
     }

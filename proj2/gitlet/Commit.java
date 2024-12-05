@@ -6,10 +6,8 @@ import java.io.File;
 import java.io.Serializable;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date; // TODO: You'll likely use this in this class
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
+
 import static gitlet.Utils.*;
 
 /** Represents a gitlet commit object.
@@ -31,7 +29,7 @@ public class Commit implements Serializable {
     private String message;
     private List<String> parentsID;
     private Date date;
-    private List<String> BlobID;
+    private Map<String,String> BlobID;
     private String ID;
 
     private String createID(){
@@ -46,7 +44,7 @@ public class Commit implements Serializable {
     public Commit(){
         message = "initial commit";
         date = new Date(0);
-        BlobID = new ArrayList<>();
+        BlobID = new TreeMap<>();
         parentsID = new ArrayList<>();
         ID = createID();
     }
@@ -58,5 +56,18 @@ public class Commit implements Serializable {
     public void saveCommit(){
         File f = join(Repository.OBJECT_DIR, ID);
         writeObject(f, this);
+    }
+
+    public static Commit readCommit(String wantedID){
+        File f = join(Repository.OBJECT_DIR, wantedID);
+        return readObject(f, Commit.class);
+    }
+
+    public void addBlob(Blob b){
+        BlobID.put(b.getID(), b.getFilePath());
+    }
+
+    public boolean checkBlob(Blob b){
+        return BlobID.containsKey(b.getID());
     }
 }

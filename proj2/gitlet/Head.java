@@ -14,8 +14,22 @@ public class Head implements Serializable {
         pointTo.add(ID);
     }
 
+    public String getPointTo(){
+        return pointTo.get(0);
+    }
+
     public void saveHead(File DIR, String name){
         File f = join(DIR, name);
         writeObject(f, this);
+    }
+
+    public static Head readHead(File DIR, String name){
+        File f = join(DIR, name);
+        return readObject(f, Head.class);
+    }
+
+    public void changePointTo(String ID){
+        pointTo.clear();
+        pointTo.add(ID);
     }
 }

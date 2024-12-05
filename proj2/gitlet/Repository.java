@@ -32,8 +32,6 @@ public class Repository {
 
     public static final File OBJECT_DIR = join(GITLET_DIR, "objects");
     public static final File REFS_DIR = join(GITLET_DIR, "refs");
-    public static final File ADDSTAGE = join(GITLET_DIR, "addstage");
-    public static final File REMOVESTAGE = join(GITLET_DIR, "removestage");
 
     public static final File HEADS_DIR = join(REFS_DIR, "heads");
 
@@ -62,8 +60,6 @@ public class Repository {
         GITLET_DIR.mkdir();
         OBJECT_DIR.mkdir();
         REFS_DIR.mkdir();
-        ADDSTAGE.mkdir();
-        REMOVESTAGE.mkdir();
         HEADS_DIR.mkdir();
 
         Commit initCommit = new Commit();
@@ -74,5 +70,30 @@ public class Repository {
 
         Head master = new Head(initCommit.getID());
         master.saveHead(HEADS_DIR, "master");
+
+        AddStage addStage = new AddStage();
+        addStage.saveAddStage();
+
+        RemoveStage removeStage = new RemoveStage();
+        removeStage.saveRemoveStage();
+    }
+
+    /*
+        1.create Blob b
+        2.add b into addstage
+        3.if b is in removestage, remove it from removestage
+        4.if b is identical to the current commit, remove it from addstage
+     */
+    public static void add(String filePath){
+        File f = join(filePath);
+        if(!f.exists()){
+            System.out.println("File does not exist.");
+            System.exit(0);
+        }
+
+        Blob b = new Blob(f.getName(),readContents(f),filePath);
+
+        AddStage addstage = AddStage.readAddStage();
+        addstage.add(b);
     }
 }
