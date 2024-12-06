@@ -18,12 +18,12 @@ public class Blob implements Serializable {
     }
 
     public void saveBlob(){
-        File f = join(Repository.OBJECT_DIR, ID);
+        File f = join(Repository.BLOB_DIR, ID);
         writeObject(f, this);
     }
 
     public Blob readBlob(String wantedID){
-        File f = join(Repository.OBJECT_DIR, wantedID);
+        File f = join(Repository.BLOB_DIR, wantedID);
         return readObject(f, Blob.class);
     }
 

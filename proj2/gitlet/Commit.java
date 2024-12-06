@@ -54,9 +54,10 @@ public class Commit implements Serializable {
         date = new Date();
 
         BlobID = new TreeMap<>();
-        parentsID = new ArrayList<>();
 
+        parentsID = new ArrayList<>();
         parentsID.add(parent.getID());
+
         Map<String, String> parentBlobID = parent.getBlobID();
         for(String key : parentBlobID.keySet()){
             String value = parentBlobID.get(key);
@@ -68,14 +69,16 @@ public class Commit implements Serializable {
         for(String key : removestageMap.keySet()){ //key is the staged file path
             BlobID.remove(key);
         }
-        removestageMap.clear();
+        removestage.getRemoveStage().clear();
+        removestage.saveRemoveStage();
 
         AddStage addstage = AddStage.readAddStage();
         Map<String, String> addstageMap = addstage.getAddStage();
         for(String key : addstageMap.keySet()){ //key is the staged file path
             BlobID.put(key, addstageMap.get(key));
         }
-        addstageMap.clear();
+        addstage.getAddStage().clear();
+        addstage.saveAddStage();
 
         ID = createID();
     }
@@ -85,12 +88,12 @@ public class Commit implements Serializable {
     }
 
     public void saveCommit(){
-        File f = join(Repository.OBJECT_DIR, ID);
+        File f = join(Repository.COMMIT_DIR, ID);
         writeObject(f, this);
     }
 
     public static Commit readCommit(String wantedID){
-        File f = join(Repository.OBJECT_DIR, wantedID);
+        File f = join(Repository.COMMIT_DIR, wantedID);
         return readObject(f, Commit.class);
     }
 
@@ -104,5 +107,21 @@ public class Commit implements Serializable {
 
     public Map<String, String> getBlobID(){
         return BlobID;
+    }
+
+    public boolean hasParent(){
+        return !parentsID.isEmpty();
+    }
+
+    public String findParentID(){
+        return parentsID.get(0);
+    }
+
+    public void printLog(){
+        System.out.println("===");
+        System.out.println("commit " + ID);
+        System.out.println("Date: " + dateToTimeStamp(date));
+        System.out.println(message);
+        System.out.println();
     }
 }

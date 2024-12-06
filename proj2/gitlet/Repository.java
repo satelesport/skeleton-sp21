@@ -35,11 +35,14 @@ public class Repository {
     public static final File REFS_DIR = join(GITLET_DIR, "refs");
 
     public static final File HEADS_DIR = join(REFS_DIR, "heads");
+    public static final File COMMIT_DIR = join(OBJECT_DIR, "commitID");
+    public static final File BLOB_DIR = join(OBJECT_DIR, "blobID");
 
     /*
      *   .gitlet
      *      |--objects
-     *      |     |--commit and blob
+     *      |     |--commitID
+     *      |     |--blobID
      *      |--refs
      *      |    |--heads
      *      |         |--master
@@ -62,6 +65,8 @@ public class Repository {
         OBJECT_DIR.mkdir();
         REFS_DIR.mkdir();
         HEADS_DIR.mkdir();
+        COMMIT_DIR.mkdir();
+        BLOB_DIR.mkdir();
 
         Commit initCommit = new Commit();
         initCommit.saveCommit();
@@ -94,6 +99,7 @@ public class Repository {
         }
 
         Blob b = new Blob(f.getName(),readContents(f),filePath);
+        b.saveBlob();
 
         AddStage addstage = AddStage.readAddStage();
         addstage.add(b);
@@ -171,6 +177,28 @@ public class Repository {
         else{
             System.out.println("No reason to remove the file.");
             System.exit(0);
+        }
+    }
+
+    public static void log(){
+        Head h = Head.readHead(Repository.GITLET_DIR, "HEAD");
+        Commit currentCommit = Commit.readCommit(h.getPointTo());
+
+        while(true){
+            currentCommit.printLog();
+            if(!currentCommit.hasParent()){
+                break;
+            }
+            String PID = currentCommit.findParentID();
+            currentCommit = Commit.readCommit(PID);
+        }
+    }
+
+    public static void global_log(){
+        List<String> commitList = plainFilenamesIn(COMMIT_DIR);
+        for(String commitID : commitList){
+            Commit selectCommit = Commit.readCommit(commitID);
+            selectCommit.printLog();
         }
     }
 }
