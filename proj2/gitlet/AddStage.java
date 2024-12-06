@@ -40,4 +40,8 @@ public class AddStage implements Serializable {
             addStage.remove(b.getFilePath());
         }
     }
+
+    public Map<String, String> getAddStage(){
+        return addStage;
+    }
 }

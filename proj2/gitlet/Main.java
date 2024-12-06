@@ -28,11 +28,19 @@ public class Main {
                 }
                 Repository.add(args[1]);
                 break;
-            case "comment":
-
+            case "commit":
+                if(!validateNumArgs(args, 2)){
+                    System.out.println("Incorrect operands.");
+                    System.exit(0);
+                }
+                Repository.commit(args[1]);
                 break;
             case "rm":
-
+                if(!validateNumArgs(args, 2)){
+                    System.out.println("Incorrect operands.");
+                    System.exit(0);
+                }
+                Repository.rm(args[1]);
                 break;
             case "log":
 

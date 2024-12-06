@@ -34,4 +34,8 @@ public class RemoveStage implements Serializable {
     public void remove(Blob b){
         removeStage.remove(b.getFilePath());
     }
+
+    public Map<String, String> getRemoveStage(){
+        return removeStage;
+    }
 }

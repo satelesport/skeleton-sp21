@@ -49,6 +49,37 @@ public class Commit implements Serializable {
         ID = createID();
     }
 
+    public Commit(String m, Commit parent){
+        message = m;
+        date = new Date();
+
+        BlobID = new TreeMap<>();
+        parentsID = new ArrayList<>();
+
+        parentsID.add(parent.getID());
+        Map<String, String> parentBlobID = parent.getBlobID();
+        for(String key : parentBlobID.keySet()){
+            String value = parentBlobID.get(key);
+            BlobID.put(key, value);
+        }
+
+        RemoveStage removestage = RemoveStage.readRemoveStage();
+        Map<String, String> removestageMap = removestage.getRemoveStage();
+        for(String key : removestageMap.keySet()){ //key is the staged file path
+            BlobID.remove(key);
+        }
+        removestageMap.clear();
+
+        AddStage addstage = AddStage.readAddStage();
+        Map<String, String> addstageMap = addstage.getAddStage();
+        for(String key : addstageMap.keySet()){ //key is the staged file path
+            BlobID.put(key, addstageMap.get(key));
+        }
+        addstageMap.clear();
+
+        ID = createID();
+    }
+
     public String getID(){
         return ID;
     }
@@ -64,10 +95,14 @@ public class Commit implements Serializable {
     }
 
     public void addBlob(Blob b){
-        BlobID.put(b.getID(), b.getFilePath());
+        BlobID.put(b.getFilePath(), b.getID());
     }
 
     public boolean checkBlob(Blob b){
-        return BlobID.containsKey(b.getID());
+        return BlobID.containsValue(b.getID());
+    }
+
+    public Map<String, String> getBlobID(){
+        return BlobID;
     }
 }
