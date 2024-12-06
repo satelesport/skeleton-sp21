@@ -124,4 +124,8 @@ public class Commit implements Serializable {
         System.out.println(message);
         System.out.println();
     }
+
+    public String getMessage(){
+        return message;
+    }
 }

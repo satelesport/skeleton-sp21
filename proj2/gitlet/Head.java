@@ -8,10 +8,12 @@ import static gitlet.Utils.*;
 
 public class Head implements Serializable {
     private List<String> pointTo;
+    private List<String> currentBranch;
 
     public Head(String ID) {
         pointTo = new ArrayList<>();
         pointTo.add(ID);
+        currentBranch = new ArrayList<>();
     }
 
     public String getPointTo(){
@@ -31,5 +33,14 @@ public class Head implements Serializable {
     public void changePointTo(String ID){
         pointTo.clear();
         pointTo.add(ID);
+    }
+
+    public void changeCurrentBranch(String brunch){
+        currentBranch.clear();
+        currentBranch.add(brunch);
+    }
+
+    public String getCurrentBranch(){
+        return currentBranch.get(0);
     }
 }

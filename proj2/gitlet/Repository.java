@@ -72,6 +72,7 @@ public class Repository {
         initCommit.saveCommit();
 
         Head h = new Head(initCommit.getID());
+        h.changeCurrentBranch("master");
         h.saveHead(GITLET_DIR, "HEAD");
 
         Head master = new Head(initCommit.getID());
@@ -200,5 +201,61 @@ public class Repository {
             Commit selectCommit = Commit.readCommit(commitID);
             selectCommit.printLog();
         }
+    }
+
+    public static void find(String message){
+        List<String> commitList = plainFilenamesIn(COMMIT_DIR);
+        boolean f = false;
+        for(String commitID : commitList){
+            Commit selectCommit = Commit.readCommit(commitID);
+            if(selectCommit.getMessage().equals(message)){
+                System.out.println(selectCommit.getID());
+                f = true;
+            }
+        }
+        if(!f){
+            System.out.println("Found no commit with that message.");
+            System.exit(0);
+        }
+    }
+
+    public static void status(){
+        System.out.println("=== Branches ===");
+        List<String> branchList = plainFilenamesIn(HEADS_DIR);
+
+        Head h = Head.readHead(Repository.GITLET_DIR, "HEAD");
+        String currentBranch = h.getCurrentBranch();
+
+        for(String branch : branchList){
+            if(branch.equals(currentBranch)){
+                System.out.print("*");
+            }
+            System.out.println(branch);
+        }
+        System.out.println();
+
+        System.out.println("=== Staged Files ===");
+        AddStage addstage = AddStage.readAddStage();
+        Map<String, String> addstageMap = addstage.getAddStage();
+        for(String key : addstageMap.keySet()){
+            File f = join(key);
+            System.out.println(f.getName());
+        }
+        System.out.println();
+
+        System.out.println("=== Removed Files ===");
+        RemoveStage removestage = RemoveStage.readRemoveStage();
+        Map<String, String> removestageMap = removestage.getRemoveStage();
+        for(String key : removestageMap.keySet()){
+            File f = join(key);
+            System.out.println(f.getName());
+        }
+        System.out.println();
+
+        System.out.println("=== Modifications Not Staged For Commit ===");
+        System.out.println();
+
+        System.out.println("=== Untracked Files ===");
+        System.out.println();
     }
 }

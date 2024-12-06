@@ -49,10 +49,14 @@ public class Main {
                 Repository.global_log();
                 break;
             case "find":
-
+                if(!validateNumArgs(args, 2)){
+                    System.out.println("Incorrect operands.");
+                    System.exit(0);
+                }
+                Repository.find(args[1]);
                 break;
             case "status":
-
+                Repository.status();
                 break;
             case "checkout":
 
