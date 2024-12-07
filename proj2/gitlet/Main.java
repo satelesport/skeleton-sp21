@@ -88,7 +88,11 @@ public class Main {
                 Repository.rm_branch(args[1]);
                 break;
             case "reset":
-
+                if(!validateNumArgs(args, 2)){
+                    System.out.println("Incorrect operands.");
+                    System.exit(0);
+                }
+                Repository.reset(args[1]);
                 break;
             case "merge":
 

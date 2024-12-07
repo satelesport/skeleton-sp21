@@ -9,18 +9,15 @@ import java.util.Map;
 import static gitlet.Utils.*;
 import gitlet.Commit;
 
-// TODO: any imports you need here
 
 /** Represents a gitlet repository.
- *  TODO: It's a good idea to give a description here of what else this Class
+ *
  *  does at a high level.
  *
  *  @author TODO
  */
 public class Repository {
     /**
-     * TODO: add instance variables here.
-     *
      * List all instance variables of the Repository class here with a useful
      * comment above them describing what that variable represents and how that
      * variable is used. We've provided two examples for you.
@@ -417,5 +414,72 @@ public class Repository {
 
         File f = join(HEADS_DIR, branchName);
         f.delete();
+    }
+
+    /*
+        1.check if the commitID exists
+        2.like checkout branch
+        3.remove the current branch's head to the commit, save it
+        3.remember to save HEAD, clear stage, and save them
+     */
+    public static void reset(String commitID){
+        List<String> commitList = plainFilenamesIn(COMMIT_DIR);
+        String ID = "";
+        for(String s : commitList){
+            if(s.startsWith(commitID)){
+                ID = s;
+                break;
+            }
+        }
+        if(ID.isEmpty()){
+            System.out.println("No commit with that id exists.");
+            System.exit(0);
+        }
+
+        Head h = Head.readHead(GITLET_DIR, "HEAD");
+        Commit newCommit = Commit.readCommit(ID);
+        Commit oldCommit = Commit.readCommit(h.getPointTo());
+
+        Map<String, String> oldMap = oldCommit.getBlobID();
+        Map<String, String> newMap = newCommit.getBlobID();
+
+        for(String filePath : newMap.keySet()){
+            if(!oldMap.containsKey(filePath)){
+                File f = join(filePath);
+                if(f.exists()){
+                    System.out.println("here is an untracked file in the way; delete it, or add and commit it first.");
+                    System.exit(0);
+                }
+            }
+        }
+
+        for(String filePath : newMap.keySet()){
+            File f = join(filePath);
+            String BlobID = newMap.get(filePath);
+            Blob b = Blob.readBlob(BlobID);
+            writeContents(f, b.content);
+        }
+
+        for(String filePath : oldMap.keySet()){
+            if(!newMap.containsKey(filePath)){
+                File f = join(filePath);
+                f.delete();
+            }
+        }
+
+        AddStage addstage = AddStage.readAddStage();
+        RemoveStage removestage = RemoveStage.readRemoveStage();
+        addstage.getAddStage().clear();
+        removestage.getRemoveStage().clear();
+        addstage.saveAddStage();
+        removestage.saveRemoveStage();
+
+        String branchName = h.getCurrentBranch();
+        Head branch = Head.readHead(HEADS_DIR, branchName);
+        branch.changePointTo(newCommit.getID());
+        branch.saveHead(HEADS_DIR, branchName);
+
+        h.changePointTo(newCommit.getID());
+        h.saveHead(GITLET_DIR, "HEAD");
     }
 }
