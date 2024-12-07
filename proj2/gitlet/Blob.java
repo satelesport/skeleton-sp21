@@ -8,7 +8,7 @@ public class Blob implements Serializable {
     private String ID;
     private String fileName;
     private String filePath;
-    private byte[] content;
+    public byte[] content;
 
     public Blob(String fn, byte[] c, String fp){
         fileName = fn;
@@ -22,7 +22,7 @@ public class Blob implements Serializable {
         writeObject(f, this);
     }
 
-    public Blob readBlob(String wantedID){
+    public static Blob readBlob(String wantedID){
         File f = join(Repository.BLOB_DIR, wantedID);
         return readObject(f, Blob.class);
     }

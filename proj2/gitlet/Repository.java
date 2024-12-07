@@ -258,4 +258,56 @@ public class Repository {
         System.out.println("=== Untracked Files ===");
         System.out.println();
     }
+
+    /*
+        1.check if the current commit has the file
+        2.overwrite the given file with the file in commit
+     */
+    public static void checkout_filePath(String filePath){
+        Head h = Head.readHead(Repository.GITLET_DIR, "HEAD");
+        Commit currentCommit = Commit.readCommit(h.getPointTo());
+
+        if(currentCommit.getBlobID().containsKey(filePath)){
+            File f = join(filePath);
+            String BlobID = currentCommit.getBlobID().get(filePath);
+            Blob b = Blob.readBlob(BlobID);
+            writeContents(f, b.content);
+        }
+        else{
+            System.out.println("File does not exist in that commit.");
+            System.exit(0);
+        }
+    }
+
+    public static void checkout_CommitID_filePath(String commitID, String filePath){
+        List<String> commitList = plainFilenamesIn(COMMIT_DIR);
+        String ID = "";
+        for(String s : commitList){
+            if(s.startsWith(commitID)){
+                ID = s;
+                break;
+            }
+        }
+        if(ID.isEmpty()){
+            System.out.println("No commit with that id exists.");
+            System.exit(0);
+        }
+        
+        Commit c = Commit.readCommit(ID);
+
+        if(c.getBlobID().containsKey(filePath)){
+            File f = join(filePath);
+            String BlobID = c.getBlobID().get(filePath);
+            Blob b = Blob.readBlob(BlobID);
+            writeContents(f, b.content);
+        }
+        else{
+            System.out.println("File does not exist in that commit.");
+            System.exit(0);
+        }
+    }
+
+    public static void checkout_branchName(String branchName){
+
+    }
 }

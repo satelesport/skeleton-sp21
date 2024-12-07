@@ -59,7 +59,19 @@ public class Main {
                 Repository.status();
                 break;
             case "checkout":
-
+                if(validateNumArgs(args, 3)){
+                    Repository.checkout_filePath(args[2]);
+                }
+                else if(validateNumArgs(args, 4)){
+                    Repository.checkout_CommitID_filePath(args[1],args[3]);
+                }
+                else if(validateNumArgs(args, 2)){
+                    Repository.checkout_branchName(args[1]);
+                }
+                else{
+                    System.out.println("Incorrect operands.");
+                    System.exit(0);
+                }
                 break;
             case "branch":
 
