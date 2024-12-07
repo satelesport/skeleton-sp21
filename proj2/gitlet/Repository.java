@@ -114,6 +114,7 @@ public class Repository {
         (addstage does not need to rewrite, but removestage need to delete)
         4.save newCommit, clear the stage
         5.HEAD point to newCommit and save
+        6.currentBranch point to newCommit and save
      */
     public static void commit(String message){
         if(message.isEmpty()){
@@ -143,6 +144,11 @@ public class Repository {
 
         h.changePointTo(newCommit.getID());
         h.saveHead(GITLET_DIR, "HEAD");
+
+        String currentBranchName = h.getCurrentBranch();
+        Head currentBranch = Head.readHead(Repository.HEADS_DIR, currentBranchName);
+        currentBranch.changePointTo(newCommit.getID());
+        currentBranch.saveHead(Repository.HEADS_DIR, currentBranchName);
     }
 
     /*
@@ -310,7 +316,106 @@ public class Repository {
         }
     }
 
-    public static void checkout_branchName(String branchName){
 
+    private static boolean branchExist(String branchName){
+        List<String> branchList = plainFilenamesIn(HEADS_DIR);
+        if(branchList.isEmpty()) return false;
+        for(String s : branchList){
+            if(s.equals(branchName)){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /*
+            1.check if there exists the branch
+            2.if the branch is the current, return
+            3.(1)if a file in old commit and in new commit, rewrite it
+              (2)if a file in old commit and not in new commit, delete it
+              (3)if a file not in old commit and in new commit, create it
+                 !!!!but if the file already exists, throw error
+            4.clear the stage, repoint the HEAD(the branch and commit)
+     */
+    public static void checkout_branchName(String branchName){
+        if(!branchExist(branchName)){
+            System.out.println("No such branch exists.");
+            System.exit(0);
+        }
+
+        Head h = Head.readHead(GITLET_DIR, "HEAD");
+        if(branchName.equals(h.getCurrentBranch())){
+            System.out.println("No need to checkout the current branch.");
+            System.exit(0);
+        }
+
+        Head newBranch = Head.readHead(HEADS_DIR, branchName);
+        Commit newCommit = Commit.readCommit(newBranch.getPointTo());
+        Commit oldCommit = Commit.readCommit(h.getPointTo());
+
+        Map<String, String> oldMap = oldCommit.getBlobID();
+        Map<String, String> newMap = newCommit.getBlobID();
+
+        for(String filePath : newMap.keySet()){
+            if(!oldMap.containsKey(filePath)){
+                File f = join(filePath);
+                if(f.exists()){
+                    System.out.println("here is an untracked file in the way; delete it, or add and commit it first.");
+                    System.exit(0);
+                }
+            }
+        }
+
+        for(String filePath : newMap.keySet()){
+            File f = join(filePath);
+            String BlobID = newMap.get(filePath);
+            Blob b = Blob.readBlob(BlobID);
+            writeContents(f, b.content);
+        }
+
+        for(String filePath : oldMap.keySet()){
+            if(!newMap.containsKey(filePath)){
+                File f = join(filePath);
+                f.delete();
+            }
+        }
+
+        AddStage addstage = AddStage.readAddStage();
+        RemoveStage removestage = RemoveStage.readRemoveStage();
+        addstage.getAddStage().clear();
+        removestage.getRemoveStage().clear();
+        addstage.saveAddStage();
+        removestage.saveRemoveStage();
+
+        h.changeCurrentBranch(branchName);
+        h.changePointTo(newCommit.getID());
+        h.saveHead(GITLET_DIR, "HEAD");
+    }
+
+    public static void branch(String branchName){
+        if(branchExist(branchName)){
+            System.out.println("A branch with that name already exists.");
+            System.exit(0);
+        }
+
+        Head h = Head.readHead(GITLET_DIR, "HEAD");
+        Head newBranch = new Head(h.getPointTo());
+        newBranch.saveHead(HEADS_DIR, branchName);
+    }
+
+    public static void rm_branch(String branchName){
+        if(!branchExist(branchName)){
+            System.out.println("No commit with that id exists.");
+            System.exit(0);
+        }
+
+        Head h = Head.readHead(GITLET_DIR, "HEAD");
+        if(h.getCurrentBranch().equals(branchName)){
+            System.out.println("Cannot remove the current branch.");
+            System.exit(0);
+        }
+
+        File f = join(HEADS_DIR, branchName);
+        f.delete();
     }
 }

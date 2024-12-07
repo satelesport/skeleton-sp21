@@ -74,10 +74,18 @@ public class Main {
                 }
                 break;
             case "branch":
-
+                if(!validateNumArgs(args, 2)){
+                    System.out.println("Incorrect operands.");
+                    System.exit(0);
+                }
+                Repository.branch(args[1]);
                 break;
             case "rm-branch":
-
+                if(!validateNumArgs(args, 2)){
+                    System.out.println("Incorrect operands.");
+                    System.exit(0);
+                }
+                Repository.rm_branch(args[1]);
                 break;
             case "reset":
 
