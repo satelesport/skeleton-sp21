@@ -279,6 +279,9 @@ public class Repository {
         }
     }
 
+    /*
+        like the one above, but the commit is from the given commitID
+     */
     public static void checkout_CommitID_filePath(String commitID, String filePath){
         List<String> commitList = plainFilenamesIn(COMMIT_DIR);
         String ID = "";
@@ -292,7 +295,7 @@ public class Repository {
             System.out.println("No commit with that id exists.");
             System.exit(0);
         }
-        
+
         Commit c = Commit.readCommit(ID);
 
         if(c.getBlobID().containsKey(filePath)){
