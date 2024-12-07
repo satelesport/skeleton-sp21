@@ -43,9 +43,17 @@ public class Main {
                 Repository.rm(args[1]);
                 break;
             case "log":
+                if(!Repository.isCreate()){
+                    System.out.println("Not in an initialized Gitlet directory.");
+                    System.exit(0);
+                }
                 Repository.log();
                 break;
             case "global-log":
+                if(!Repository.isCreate()){
+                    System.out.println("Not in an initialized Gitlet directory.");
+                    System.exit(0);
+                }
                 Repository.global_log();
                 break;
             case "find":
@@ -56,13 +64,17 @@ public class Main {
                 Repository.find(args[1]);
                 break;
             case "status":
+                if(!Repository.isCreate()){
+                    System.out.println("Not in an initialized Gitlet directory.");
+                    System.exit(0);
+                }
                 Repository.status();
                 break;
             case "checkout":
-                if(validateNumArgs(args, 3)){
+                if(validateNumArgs(args, 3) && args[1].equals("--")){
                     Repository.checkout_filePath(args[2]);
                 }
-                else if(validateNumArgs(args, 4)){
+                else if(validateNumArgs(args, 4) && args[2].equals("--")){
                     Repository.checkout_CommitID_filePath(args[1],args[3]);
                 }
                 else if(validateNumArgs(args, 2)){
@@ -95,7 +107,11 @@ public class Main {
                 Repository.reset(args[1]);
                 break;
             case "merge":
-
+                if(!validateNumArgs(args, 2)){
+                    System.out.println("Incorrect operands.");
+                    System.exit(0);
+                }
+                Repository.merge(args[1]);
                 break;
             default:
                 System.out.println("No command with that name exists.");

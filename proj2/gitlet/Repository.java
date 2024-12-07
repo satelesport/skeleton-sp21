@@ -171,12 +171,13 @@ public class Repository {
             if(currentCommit.getBlobID().containsKey(filePath)){
                 if(currentCommit.getBlobID().get(filePath) != null){
                     removestageMap.put(filePath, currentCommit.getBlobID().get(filePath));
+                    f.delete();
                 }
             }
 
             addstage.saveAddStage();
             removestage.saveRemoveStage();
-            f.delete();
+
         }
         else{
             System.out.println("No reason to remove the file.");
@@ -402,7 +403,7 @@ public class Repository {
 
     public static void rm_branch(String branchName){
         if(!branchExist(branchName)){
-            System.out.println("No commit with that id exists.");
+            System.out.println("A branch with that name does not exist.");
             System.exit(0);
         }
 
@@ -481,5 +482,39 @@ public class Repository {
 
         h.changePointTo(newCommit.getID());
         h.saveHead(GITLET_DIR, "HEAD");
+    }
+
+    /*
+        1.check if the stage is empty
+        2.check if the branch exist
+        3.check if the current branch
+     */
+    public static void merge(String branchName){
+        AddStage addstage = AddStage.readAddStage();
+        RemoveStage removestage = RemoveStage.readRemoveStage();
+        int size = 0;
+        for(String key : addstage.getAddStage().keySet()){
+            size++;
+        }
+        for(String key : removestage.getRemoveStage().keySet()){
+            size++;
+        }
+        if(size == 0){
+            System.out.println("You have uncommitted changes.");
+            System.exit(0);
+        }
+
+        if(!branchExist(branchName)){
+            System.out.println("A branch with that name does not exist.");
+            System.exit(0);
+        }
+
+        Head h = Head.readHead(GITLET_DIR, "HEAD");
+        if(branchName.equals(h.getCurrentBranch())){
+            System.out.println("Cannot merge a branch with itself.");
+            System.exit(0);
+        }
+
+
     }
 }
