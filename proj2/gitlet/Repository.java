@@ -538,10 +538,11 @@ public class Repository {
         Map<String, Integer> mergeCommitParent = new TreeMap<>();
         Commit temp = currentCommit;
         List<Pair<String, Integer>> l = new ArrayList<>();
-        l.addLast(new Pair<String, Integer>(temp.getID(), 1));
+        l.addLast(new Pair<>(temp.getID(), 1));
         while(!l.isEmpty()){
             currentCommitParent.put(l.getFirst().ID, l.getFirst().size);
             temp = Commit.readCommit(l.getFirst().ID);
+            if(temp.getParentsID().isEmpty()) break;
             for(String s : temp.getParentsID()){
                 if(s != null){
                     l.addLast(new Pair<>(s, l.getFirst().size + 1));
@@ -551,10 +552,11 @@ public class Repository {
         }
         l.clear();
         temp = mergeCommit;
-        l.addLast(new Pair<String, Integer>(temp.getID(), 1));
+        l.addLast(new Pair<>(temp.getID(), 1));
         while(!l.isEmpty()){
             mergeCommitParent.put(l.getFirst().ID, l.getFirst().size);
             temp = Commit.readCommit(l.getFirst().ID);
+            if(temp.getParentsID().isEmpty()) break;
             for(String s : temp.getParentsID()){
                 if(s != null){
                     l.addLast(new Pair<>(s, l.getFirst().size + 1));
