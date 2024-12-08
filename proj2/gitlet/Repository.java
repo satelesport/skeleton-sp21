@@ -602,7 +602,6 @@ public class Repository {
             allFileMap.put(key, spiltMap.get(key));
         }
 
-        boolean isConflict = false;
         for(String key : allFileMap.keySet()){
             if(currentMap.containsKey(key) && mergeMap.containsKey(key) && spiltMap.containsKey(key)){
                 if(currentMap.get(key).equals(spiltMap.get(key)) && !mergeMap.get(key).equals(spiltMap.get(key))){
@@ -620,15 +619,27 @@ public class Repository {
                 }
 
                 if(!currentMap.get(key).equals(spiltMap.get(key)) && !mergeMap.get(key).equals(spiltMap.get(key))){
-                    checkout_CommitID_filePath(currentCommit.getID(), key);
                     File f = join(key);
                     Blob currentBlob = Blob.readBlob(currentMap.get(key));
                     Blob mergeBlob = Blob.readBlob(mergeMap.get(key));
                     writeContents(f, "<<<<<<< HEAD\n", currentBlob.content, "=======\n", mergeBlob.content, ">>>>>>>");
+                    System.out.println("Encountered a merge conflict.");
                     add(key);
-                    isConflict = true;
                     continue;
                 }
+            }
+
+            if(currentMap.containsKey(key) && mergeMap.containsKey(key) && !spiltMap.containsKey(key) && !currentMap.get(key).equals(mergeMap.get(key))){
+                File f = join(key);
+                Blob currentBlob = Blob.readBlob(currentMap.get(key));
+                Blob mergeBlob = Blob.readBlob(mergeMap.get(key));
+                writeContents(f, "<<<<<<< HEAD\n", currentBlob.content, "=======\n", mergeBlob.content, ">>>>>>>\n");
+                System.out.println("Encountered a merge conflict.");
+                add(key);
+            }
+
+            if(currentMap.containsKey(key) && mergeMap.containsKey(key) && !spiltMap.containsKey(key) && currentMap.get(key).equals(mergeMap.get(key))){
+                continue;
             }
 
             if(!currentMap.containsKey(key) && !mergeMap.containsKey(key)){
@@ -666,9 +677,5 @@ public class Repository {
         Commit c = Commit.readCommit(h.getPointTo());
         c.addParent(mergeCommit.getID());
         c.saveCommit();
-
-        if(isConflict){
-            System.out.println("Encountered a merge conflict.");
-        }
     }
 }
