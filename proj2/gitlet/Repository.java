@@ -2,10 +2,7 @@ package gitlet;
 
 import java.io.File;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.*;
 
 import static gitlet.Utils.*;
 import gitlet.Commit;
@@ -537,7 +534,7 @@ public class Repository {
         Map<String, Integer> currentCommitParent = new TreeMap<>();
         Map<String, Integer> mergeCommitParent = new TreeMap<>();
         Commit temp = currentCommit;
-        List<Pair<String, Integer>> l = new ArrayList<>();
+        List<Pair<String, Integer>> l = new LinkedList<>();
         l.addLast(new Pair<>(temp.getID(), 1));
         while(!l.isEmpty()){
             currentCommitParent.put(l.getFirst().ID, l.getFirst().size);
