@@ -492,6 +492,7 @@ public class Repository {
         4.find the nearest spilt point of the two branches
         5.If the split point is the same commit as the given branch, we do nothing
         6.If the split point is the same commit as the current branch, we check out the given branch
+        7.MERGE!!!
      */
     public static void merge(String branchName){
         AddStage addstage = AddStage.readAddStage();
@@ -588,6 +589,9 @@ public class Repository {
             }
         }
 
+        /*
+            can be cut into different situation
+         */
         for(String key : currentMap.keySet()){
             allFileMap.put(key, currentMap.get(key));
         }
@@ -616,7 +620,12 @@ public class Repository {
                 }
 
                 if(!currentMap.get(key).equals(spiltMap.get(key)) && !mergeMap.get(key).equals(spiltMap.get(key))){
-                    //need to complete
+                    checkout_CommitID_filePath(currentCommit.getID(), key);
+                    File f = join(key);
+                    Blob currentBlob = Blob.readBlob(currentMap.get(key));
+                    Blob mergeBlob = Blob.readBlob(mergeMap.get(key));
+                    writeContents(f, "<<<<<<< HEAD\n", currentBlob.content, "=======\n", mergeBlob.content, ">>>>>>>");
+                    add(key);
                     isConflict = true;
                     continue;
                 }
