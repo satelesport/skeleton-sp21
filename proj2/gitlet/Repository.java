@@ -507,6 +507,8 @@ public class Repository {
             System.out.println("You have uncommitted changes.");
             System.exit(0);
         }
+        addstage.saveAddStage();
+        removestage.saveRemoveStage();
 
         if(!branchExist(branchName)){
             System.out.println("A branch with that name does not exist.");
@@ -571,6 +573,93 @@ public class Repository {
             System.exit(0);
         }
 
+        Map<String, String> currentMap = currentCommit.getBlobID();
+        Map<String, String> mergeMap = mergeCommit.getBlobID();
+        Map<String, String> spiltMap = spiltCommit.getBlobID();
+        Map<String, String> allFileMap = new TreeMap<>();
 
+        for(String key : mergeMap.keySet()){
+            if(!currentMap.containsKey(key) && !spiltMap.containsKey(key)){
+                File f = join(key);
+                if(f.exists()){
+                    System.out.println("There is an untracked file in the way; delete it, or add and commit it first.");
+                    System.exit(0);
+                }
+            }
+        }
+
+        for(String key : currentMap.keySet()){
+            allFileMap.put(key, currentMap.get(key));
+        }
+        for(String key : mergeMap.keySet()){
+            allFileMap.put(key, mergeMap.get(key));
+        }
+        for(String key : spiltMap.keySet()){
+            allFileMap.put(key, spiltMap.get(key));
+        }
+
+        boolean isConflict = false;
+        for(String key : allFileMap.keySet()){
+            if(currentMap.containsKey(key) && mergeMap.containsKey(key) && spiltMap.containsKey(key)){
+                if(currentMap.get(key).equals(spiltMap.get(key)) && !mergeMap.get(key).equals(spiltMap.get(key))){
+                    checkout_CommitID_filePath(mergeCommit.getID(), key);
+                    add(key);
+                    continue;
+                }
+
+                if(!currentMap.get(key).equals(spiltMap.get(key)) && mergeMap.get(key).equals(spiltMap.get(key))){
+                    continue;
+                }
+
+                if(currentMap.get(key).equals(mergeMap.get(key))){
+                    continue;
+                }
+
+                if(!currentMap.get(key).equals(spiltMap.get(key)) && !mergeMap.get(key).equals(spiltMap.get(key))){
+                    //need to complete
+                    isConflict = true;
+                    continue;
+                }
+            }
+
+            if(!currentMap.containsKey(key) && !mergeMap.containsKey(key)){
+                continue;
+            }
+
+            if(!currentMap.containsKey(key) && !spiltMap.containsKey(key)){
+                checkout_CommitID_filePath(mergeCommit.getID(), key);
+                add(key);
+                continue;
+            }
+
+            if(!mergeMap.containsKey(key) && !spiltMap.containsKey(key)){
+                continue;
+            }
+
+            if(!currentMap.containsKey(key) && mergeMap.containsKey(key) && spiltMap.containsKey(key)){
+                continue;
+            }
+
+            if(currentMap.containsKey(key) && !mergeMap.containsKey(key) && spiltMap.containsKey(key)){
+                rm(key);
+                continue;
+            }
+        }
+
+        h.saveHead(GITLET_DIR, "HEAD");
+        currentBranch.saveHead(HEADS_DIR, h.getCurrentBranch());
+        mergeBranch.saveHead(HEADS_DIR, branchName);
+
+        String m = "Merged " + branchName + " into " + h.getCurrentBranch() + ".";
+        commit(m);
+
+        h = Head.readHead(GITLET_DIR, "HEAD");
+        Commit c = Commit.readCommit(h.getPointTo());
+        c.addParent(mergeCommit.getID());
+        c.saveCommit();
+
+        if(isConflict){
+            System.out.println("Encountered a merge conflict.");
+        }
     }
 }

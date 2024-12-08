@@ -127,4 +127,7 @@ public class Commit implements Serializable {
         return message;
     }
 
+    public void addParent(String ID){
+        parentsID.add(ID);
+    }
 }
