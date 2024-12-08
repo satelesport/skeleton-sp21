@@ -622,7 +622,7 @@ public class Repository {
                     File f = join(key);
                     Blob currentBlob = Blob.readBlob(currentMap.get(key));
                     Blob mergeBlob = Blob.readBlob(mergeMap.get(key));
-                    writeContents(f, "<<<<<<< HEAD\n", currentBlob.content, "=======\n", mergeBlob.content, ">>>>>>>");
+                    writeContents(f, "<<<<<<< HEAD\n", currentBlob.content, "=======\n", mergeBlob.content, ">>>>>>>\n");
                     System.out.println("Encountered a merge conflict.");
                     add(key);
                     continue;
