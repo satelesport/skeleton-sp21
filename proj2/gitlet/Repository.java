@@ -23,7 +23,14 @@ public class Repository {
      * comment above them describing what that variable represents and how that
      * variable is used. We've provided two examples for you.
      */
-
+    private static class Pair<A, B>{
+        public A ID;
+        public B size;
+        public Pair(A a, B b){
+            ID = a;
+            size = b;
+        }
+    }
     /** The current working directory. */
     public static final File CWD = new File(System.getProperty("user.dir"));
     /** The .gitlet directory. */
@@ -530,26 +537,29 @@ public class Repository {
         Map<String, Integer> currentCommitParent = new TreeMap<>();
         Map<String, Integer> mergeCommitParent = new TreeMap<>();
         Commit temp = currentCommit;
-        size = 1;
-        while(true){
-            currentCommitParent.put(temp.getID(), size);
-            if(!temp.hasParent()){
-                break;
+        List<Pair<String, Integer>> l = new ArrayList<>();
+        l.add(new Pair<String, Integer>(temp.getID(), 1));
+        while(!l.isEmpty()){
+            currentCommitParent.put(l.getFirst().ID, l.getFirst().size);
+            temp = Commit.readCommit(l.getFirst().ID);
+            for(String s : temp.getParentsID()){
+                if(s != null){
+                    l.add(new Pair<>(s, l.getFirst().size + 1));
+                }
             }
-            String PID = temp.findParentID();
-            temp = Commit.readCommit(PID);
-            size += 1;
+            l.removeFirst();
         }
         temp = mergeCommit;
-        size = 1;
-        while(true){
-            mergeCommitParent.put(temp.getID(), size);
-            if(!temp.hasParent()){
-                break;
+        l.add(new Pair<String, Integer>(temp.getID(), 1));
+        while(!l.isEmpty()){
+            mergeCommitParent.put(l.getFirst().ID, l.getFirst().size);
+            temp = Commit.readCommit(l.getFirst().ID);
+            for(String s : temp.getParentsID()){
+                if(s != null){
+                    l.add(new Pair<>(s, l.getFirst().size + 1));
+                }
             }
-            String PID = temp.findParentID();
-            temp = Commit.readCommit(PID);
-            size += 1;
+            l.removeFirst();
         }
         String spiltCommitID = "";
         int minSize = Integer.MAX_VALUE;
@@ -602,6 +612,7 @@ public class Repository {
             allFileMap.put(key, spiltMap.get(key));
         }
 
+        boolean isConflicts = false;
         for(String key : allFileMap.keySet()){
             if(currentMap.containsKey(key) && mergeMap.containsKey(key) && spiltMap.containsKey(key)){
                 if(currentMap.get(key).equals(spiltMap.get(key)) && !mergeMap.get(key).equals(spiltMap.get(key))){
@@ -623,7 +634,8 @@ public class Repository {
                     Blob currentBlob = Blob.readBlob(currentMap.get(key));
                     Blob mergeBlob = Blob.readBlob(mergeMap.get(key));
                     writeContents(f, "<<<<<<< HEAD\n", currentBlob.content, "=======\n", mergeBlob.content, ">>>>>>>\n");
-                    System.out.println("Encountered a merge conflict.");
+                    //System.out.println("Encountered a merge conflict.");
+                    isConflicts = true;
                     add(key);
                     continue;
                 }
@@ -634,8 +646,30 @@ public class Repository {
                 Blob currentBlob = Blob.readBlob(currentMap.get(key));
                 Blob mergeBlob = Blob.readBlob(mergeMap.get(key));
                 writeContents(f, "<<<<<<< HEAD\n", currentBlob.content, "=======\n", mergeBlob.content, ">>>>>>>\n");
-                System.out.println("Encountered a merge conflict.");
+                //System.out.println("Encountered a merge conflict.");
+                isConflicts = true;
                 add(key);
+                continue;
+            }
+
+            if(currentMap.containsKey(key) && !mergeMap.containsKey(key) && spiltMap.containsKey(key) && !currentMap.get(key).equals(spiltMap.get(key))){
+                File f = join(key);
+                Blob currentBlob = Blob.readBlob(currentMap.get(key));
+                writeContents(f, "<<<<<<< HEAD\n", currentBlob.content, "=======\n", ">>>>>>>\n");
+                //System.out.println("Encountered a merge conflict.");
+                isConflicts = true;
+                add(key);
+                continue;
+            }
+
+            if(!currentMap.containsKey(key) && mergeMap.containsKey(key) && spiltMap.containsKey(key) && !mergeMap.get(key).equals(spiltMap.get(key))){
+                File f = join(key);
+                Blob mergeBlob = Blob.readBlob(mergeMap.get(key));
+                writeContents(f, "<<<<<<< HEAD\n", "=======\n", mergeBlob.content, ">>>>>>>\n");
+                //System.out.println("Encountered a merge conflict.");
+                isConflicts = true;
+                add(key);
+                continue;
             }
 
             if(currentMap.containsKey(key) && mergeMap.containsKey(key) && !spiltMap.containsKey(key) && currentMap.get(key).equals(mergeMap.get(key))){
@@ -670,6 +704,9 @@ public class Repository {
         currentBranch.saveHead(HEADS_DIR, h.getCurrentBranch());
         mergeBranch.saveHead(HEADS_DIR, branchName);
 
+        if(isConflicts){
+            System.out.println("Encountered a merge conflict.");
+        }
         String m = "Merged " + branchName + " into " + h.getCurrentBranch() + ".";
         commit(m);
 

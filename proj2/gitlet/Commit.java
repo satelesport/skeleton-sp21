@@ -130,4 +130,8 @@ public class Commit implements Serializable {
     public void addParent(String ID){
         parentsID.add(ID);
     }
+
+    public List<String> getParentsID(){
+        return parentsID;
+    }
 }
