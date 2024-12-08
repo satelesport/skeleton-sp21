@@ -5,6 +5,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 import static gitlet.Utils.*;
 import gitlet.Commit;
@@ -487,7 +488,10 @@ public class Repository {
     /*
         1.check if the stage is empty
         2.check if the branch exist
-        3.check if the current branch
+        3.check if wanted to merge with the current branch
+        4.find the nearest spilt point of the two branches
+        5.If the split point is the same commit as the given branch, we do nothing
+        6.If the split point is the same commit as the current branch, we check out the given branch
      */
     public static void merge(String branchName){
         AddStage addstage = AddStage.readAddStage();
@@ -499,7 +503,7 @@ public class Repository {
         for(String key : removestage.getRemoveStage().keySet()){
             size++;
         }
-        if(size == 0){
+        if(size != 0){
             System.out.println("You have uncommitted changes.");
             System.exit(0);
         }
@@ -515,6 +519,54 @@ public class Repository {
             System.exit(0);
         }
 
+        Head currentBranch = Head.readHead(HEADS_DIR, h.getCurrentBranch());
+        Head mergeBranch = Head.readHead(HEADS_DIR, branchName);
 
+        Commit currentCommit = Commit.readCommit(currentBranch.getPointTo());
+        Commit mergeCommit = Commit.readCommit(mergeBranch.getPointTo());
+        Map<String, Integer> currentCommitParent = new TreeMap<>();
+        Map<String, Integer> mergeCommitParent = new TreeMap<>();
+        size = 1;
+        while(true){
+            currentCommitParent.put(currentCommit.getID(), size);
+            if(!currentCommit.hasParent()){
+                break;
+            }
+            String PID = currentCommit.findParentID();
+            currentCommit = Commit.readCommit(PID);
+            size += 1;
+        }
+        size = 1;
+        while(true){
+            mergeCommitParent.put(mergeCommit.getID(), size);
+            if(!mergeCommit.hasParent()){
+                break;
+            }
+            String PID = mergeCommit.findParentID();
+            mergeCommit = Commit.readCommit(PID);
+            size += 1;
+        }
+        String spiltCommitID = "";
+        int minSize = Integer.MAX_VALUE;
+        for(String key : currentCommitParent.keySet()){
+            if(mergeCommitParent.containsKey(key)){
+                int value = currentCommitParent.get(key);
+                if(value < minSize){
+                    minSize = value;
+                    spiltCommitID = key;
+                }
+            }
+        }
+
+        Commit spiltCommit = Commit.readCommit(spiltCommitID);
+        if(currentCommit.getID().equals(spiltCommit.getID())){
+            checkout_branchName(branchName);
+            System.out.println("Current branch fast-forwarded.");
+            System.exit(0);
+        }
+        if(mergeCommit.getID().equals(spiltCommit.getID())){
+            System.out.println("Given branch is an ancestor of the current branch.");
+            System.exit(0);
+        }
     }
 }
