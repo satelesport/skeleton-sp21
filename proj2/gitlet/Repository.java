@@ -534,32 +534,32 @@ public class Repository {
         Map<String, Integer> currentCommitParent = new TreeMap<>();
         Map<String, Integer> mergeCommitParent = new TreeMap<>();
         Commit temp = currentCommit;
-        List<Pair<String, Integer>> l = new LinkedList<>();
-        l.addLast(new Pair<>(temp.getID(), 1));
-        while(!l.isEmpty()){
-            currentCommitParent.put(l.getFirst().ID, l.getFirst().size);
-            temp = Commit.readCommit(l.getFirst().ID);
-            if(temp.getParentsID().isEmpty()) break;
-            for(String s : temp.getParentsID()){
-                if(s != null){
-                    l.addLast(new Pair<>(s, l.getFirst().size + 1));
-                }
+        size = 1;
+        while(true){
+            currentCommitParent.put(temp.getID(), size);
+            if(!temp.hasParent()){
+                break;
             }
-            l.removeFirst();
+            if(temp.getParentsID().size() > 1){
+                currentCommitParent.put(temp.getParentsID().get(1), size + 1);
+            }
+            String PID = temp.findParentID();
+            temp = Commit.readCommit(PID);
+            size += 1;
         }
-        l.clear();
         temp = mergeCommit;
-        l.addLast(new Pair<>(temp.getID(), 1));
-        while(!l.isEmpty()){
-            mergeCommitParent.put(l.getFirst().ID, l.getFirst().size);
-            temp = Commit.readCommit(l.getFirst().ID);
-            if(temp.getParentsID().isEmpty()) break;
-            for(String s : temp.getParentsID()){
-                if(s != null){
-                    l.addLast(new Pair<>(s, l.getFirst().size + 1));
-                }
+        size = 1;
+        while(true){
+            mergeCommitParent.put(temp.getID(), size);
+            if(!temp.hasParent()){
+                break;
             }
-            l.removeFirst();
+            if(temp.getParentsID().size() > 1){
+                currentCommitParent.put(temp.getParentsID().get(1), size + 1);
+            }
+            String PID = temp.findParentID();
+            temp = Commit.readCommit(PID);
+            size += 1;
         }
         String spiltCommitID = "";
         int minSize = Integer.MAX_VALUE;
