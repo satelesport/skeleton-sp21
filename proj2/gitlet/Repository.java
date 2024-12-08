@@ -526,24 +526,26 @@ public class Repository {
         Commit mergeCommit = Commit.readCommit(mergeBranch.getPointTo());
         Map<String, Integer> currentCommitParent = new TreeMap<>();
         Map<String, Integer> mergeCommitParent = new TreeMap<>();
+        Commit temp = currentCommit;
         size = 1;
         while(true){
-            currentCommitParent.put(currentCommit.getID(), size);
-            if(!currentCommit.hasParent()){
+            currentCommitParent.put(temp.getID(), size);
+            if(!temp.hasParent()){
                 break;
             }
-            String PID = currentCommit.findParentID();
-            currentCommit = Commit.readCommit(PID);
+            String PID = temp.findParentID();
+            temp = Commit.readCommit(PID);
             size += 1;
         }
+        temp = mergeCommit;
         size = 1;
         while(true){
-            mergeCommitParent.put(mergeCommit.getID(), size);
-            if(!mergeCommit.hasParent()){
+            mergeCommitParent.put(temp.getID(), size);
+            if(!temp.hasParent()){
                 break;
             }
-            String PID = mergeCommit.findParentID();
-            mergeCommit = Commit.readCommit(PID);
+            String PID = temp.findParentID();
+            temp = Commit.readCommit(PID);
             size += 1;
         }
         String spiltCommitID = "";
@@ -559,9 +561,11 @@ public class Repository {
         }
 
         Commit spiltCommit = Commit.readCommit(spiltCommitID);
+        System.out.println(spiltCommitID);
+        System.out.println(mergeCommit.getID());
         if(currentCommit.getID().equals(spiltCommit.getID())){
-            checkout_branchName(branchName);
             System.out.println("Current branch fast-forwarded.");
+            checkout_branchName(branchName);
             System.exit(0);
         }
         if(mergeCommit.getID().equals(spiltCommit.getID())){
