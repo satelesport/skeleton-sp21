@@ -561,8 +561,6 @@ public class Repository {
         }
 
         Commit spiltCommit = Commit.readCommit(spiltCommitID);
-        System.out.println(spiltCommitID);
-        System.out.println(mergeCommit.getID());
         if(currentCommit.getID().equals(spiltCommit.getID())){
             System.out.println("Current branch fast-forwarded.");
             checkout_branchName(branchName);
@@ -572,5 +570,7 @@ public class Repository {
             System.out.println("Given branch is an ancestor of the current branch.");
             System.exit(0);
         }
+
+
     }
 }
